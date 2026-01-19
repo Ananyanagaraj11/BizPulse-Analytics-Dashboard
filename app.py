@@ -177,14 +177,39 @@ def enrich_data(df: pd.DataFrame, seed: int) -> pd.DataFrame:
 
 def style_figure(fig: go.Figure) -> go.Figure:
     fig.update_layout(
-        template="plotly_white",
-        font=dict(family="Inter, Segoe UI, Arial, sans-serif", size=12, color="#1f2937"),
+        template="plotly_dark",
+        font=dict(family="Inter, Segoe UI, Arial, sans-serif", size=12, color="#e5e7eb"),
         paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="#222326",
         margin=dict(l=10, r=10, t=30, b=10),
         transition=dict(duration=500, easing="cubic-in-out"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(color="#e5e7eb"),
+        ),
     )
+    fig.update_xaxes(
+        showgrid=True,
+        gridcolor="#2f2f2f",
+        zerolinecolor="#2f2f2f",
+        tickfont=dict(color="#e5e7eb"),
+        title_font=dict(color="#e5e7eb"),
+    )
+    fig.update_yaxes(
+        showgrid=True,
+        gridcolor="#2f2f2f",
+        zerolinecolor="#2f2f2f",
+        tickfont=dict(color="#e5e7eb"),
+        title_font=dict(color="#e5e7eb"),
+    )
+    fig.update_traces(textfont_color="#e5e7eb", selector=dict(type="scatter"))
+    fig.update_traces(textfont_color="#e5e7eb", selector=dict(type="bar"))
+    fig.update_traces(textfont_color="#e5e7eb", selector=dict(type="pie"))
+    fig.update_traces(textfont_color="#e5e7eb", selector=dict(type="treemap"))
     return fig
 
 
@@ -213,178 +238,113 @@ st.set_page_config(page_title="BizPulse Dashboard", layout="wide")
 st.markdown(
     """
 <style>
-/* Main background */
-.main {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-.stApp {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
+    /* Dark dashboard background */
+    .main {
+        background: #1f1f1f;
+    }
+    
+    .stApp {
+        background: #1f1f1f;
+    }
+    
+    .main * {
+        color: #ffffff !important;
+    }
+    
+    /* Top bar */
+    .dashboard-header {
+        background: #1f1f1f;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #2f2f2f;
+        margin: 0 0 1rem 0;
+        text-align: left;
+    }
 
-[data-testid="stSidebar"] { background-color: #ffffff; }
+    .block-container {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+    .dashboard-header h1 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: #e5e7eb !important;
+        margin: 0;
+    }
+    .dashboard-header p { display: none; }
 
-/* Header banner */
-.dashboard-header {
-  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-  padding: 2rem 1.5rem;
-  border-radius: 0 0 16px 16px;
-  margin: 0 0 1.5rem 0;
-  text-align: center;
-  color: white;
-}
+    /* Card styling */
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+        background: #222326 !important;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #2b2b2b;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    }
+    
+    /* Chart titles */
+    .chart-title {
+        color: #f9fafb !important;
+        font-weight: 600;
+        font-size: 18px;
+    }
+    
+    /* KPI cards */
+    .kpi-card {
+        background: #222326;
+        border: 1px solid #2b2b2b;
+        border-radius: 8px;
+        padding: 16px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    }
+    .kpi-value { color: #f9fafb !important; font-size: 28px; font-weight: 700; }
+    .kpi-label { color: #cbd5f5 !important; font-size: 0.85rem; }
+    .kpi-badge { background: rgba(92,225,166,0.18); color: #5CE1A6 !important; }
 
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 700;
-}
+    /* Sidebar dark (plain black) */
+    section[data-testid="stSidebar"] {
+        background: #000000;
+        color: #ffffff !important;
+    }
+    
+    section[data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
 
-.dashboard-header p {
-  margin: 0.5rem 0 0 0;
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
+    /* Sidebar form controls (dark inputs with white text) */
+    section[data-testid="stSidebar"] input,
+    section[data-testid="stSidebar"] textarea,
+    section[data-testid="stSidebar"] select,
+    section[data-testid="stSidebar"] [role="button"],
+    section[data-testid="stSidebar"] button {
+        background: #0f0f0f !important;
+        color: #ffffff !important;
+        border-radius: 8px;
+        border: 1px solid #2a2a2a !important;
+    }
 
-.main .block-container {
-  max-width: 100%;
-  padding: 0 1rem 2rem;
-  animation: fadeIn 600ms ease;
-}
+    /* Dropdown menu list items */
+    section[data-testid="stSidebar"] [role="listbox"],
+    section[data-testid="stSidebar"] [role="listbox"] * {
+        background: #0f0f0f !important;
+        color: #ffffff !important;
+    }
 
-.block-container { padding-top: 0; padding-bottom: 1.5rem; }
-
-/* Card styling (apply only to columns) */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div {
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(10px);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-}
-
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
-}
-
-/* Global text on gradient background */
-.main, .main * {
-  color: white !important;
-}
-
-/* Keep card content readable */
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div,
-div[data-testid="stVerticalBlock"] > div > div {
-  background: rgba(255, 255, 255, 0.95);
-  color: #1f2937 !important;
-}
-div[data-testid="stHorizontalBlock"] > div[data-testid="column"] > div *,
-div[data-testid="stVerticalBlock"] > div > div * {
-  color: #1f2937 !important;
-}
-
-/* Keep header text white even with card overrides */
-.dashboard-header, .dashboard-header * {
-  color: #ffffff !important;
-}
-
-div[data-testid="stHorizontalBlock"] { gap: 20px; }
-div[data-testid="column"] { min-width: 260px; }
-
-@media (max-width: 1100px) {
-  div[data-testid="stHorizontalBlock"] { flex-wrap: wrap; }
-  div[data-testid="column"] { flex: 1 1 calc(50% - 20px); }
-}
-@media (max-width: 700px) {
-  div[data-testid="column"] { flex: 1 1 100%; }
-}
-
-/* Chart titles */
-.chart-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 1rem;
-}
-
-/* KPI */
-.kpi-card {
-  border-left: 6px solid #4A90E2;
-  padding: 6px 0 6px 12px;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-.kpi-card.green { border-left-color: #10B981; }
-.kpi-card.orange { border-left-color: #F59E0B; }
-.kpi-card.purple { border-left-color: #BD10E0; }
-.kpi-value { font-size: 36px; font-weight: 700; color: #1f2937; margin: 6px 0; }
-.kpi-label { font-size: 0.9rem; color: #6b7280; margin: 0; }
-.kpi-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(16, 185, 129, 0.15);
-  color: #10B981;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-.kpi-badge.negative { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
-.kpi-delta { font-size: 0.85rem; font-weight: 600; color: #10B981; }
-.kpi-delta.negative { color: #EF4444; }
-
-/* Skeleton */
-.skeleton {
-  position: relative;
-  overflow: hidden;
-  background: #f1f5f9;
-  border-radius: 10px;
-  height: 220px;
-}
-.skeleton::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -150px;
-  height: 100%;
-  width: 150px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-  animation: shimmer 1.2s infinite;
-}
-@keyframes shimmer {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(500px); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.section-divider { border: none; border-top: 1px solid rgba(255,255,255,0.25); margin: 1rem 0; }
-.section-header {
-  color: white !important;
-  font-size: 24px;
-  font-weight: 600;
-  margin: 2rem 0 1rem 0;
-}
-
-/* Force header text to stay white even with card overrides */
-.dashboard-header,
-.dashboard-header * {
-  color: #ffffff !important;
-}
-
-/* Remove Streamlit branding */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
-/* Smooth transitions */
-button, input, select, textarea {
-  transition: all 0.2s ease;
-}
+    /* Multiselect chips */
+    section[data-testid="stSidebar"] .stMultiSelect [data-baseweb="tag"] {
+        background: #1f1f1f !important;
+        color: #ffffff !important;
+        border: 1px solid #2a2a2a !important;
+    }
+    /* Header text light */
+    .dashboard-header h1,
+    .dashboard-header p {
+        color: #e5e7eb !important;
+    }
+    
+    /* Hide Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
 </style>
 """,
     unsafe_allow_html=True,
@@ -392,9 +352,8 @@ button, input, select, textarea {
 
 st.markdown(
     """
-<div style="background: linear-gradient(135deg, #1e3a8a 0%, #3730a3 100%); padding: 2rem; border-radius: 0 0 16px 16px; margin-bottom: 2rem; text-align: center;">
-    <h1 style="margin: 0; font-size: 2.5rem; font-weight: 700; color: #ffffff !important;">BizPulse Analytics Dashboard</h1>
-    <p style="margin: 0.5rem 0 0 0; font-size: 1.1rem; color: #ffffff !important;">Real-time Business Intelligence &amp; Performance Metrics</p>
+<div class="dashboard-header">
+    <h1>BizPulse Analytics Dashboard</h1>
 </div>
 """,
     unsafe_allow_html=True,
@@ -454,15 +413,15 @@ total_orders = int(filtered["orders"].sum())
 avg_rating = float(filtered["rating"].mean()) if not filtered.empty else 0.0
 
 palette = {
-    "blue": "#4A90E2",
-    "green": "#10B981",
-    "purple": "#BD10E0",
-    "orange": "#F59E0B",
-    "red": "#EF4444",
-    "teal": "#14b8a6",
-    "slate": "#64748b",
+    "blue": "#58a6ff",
+    "green": "#5CE1A6",
+    "purple": "#B66DFF",
+    "orange": "#FFC857",
+    "red": "#F97070",
+    "teal": "#46E3C8",
+    "slate": "#9CA3AF",
 }
-color_sequence = [palette["blue"], palette["green"], palette["purple"], palette["orange"]]
+color_sequence = [palette["orange"], palette["green"], palette["purple"], palette["blue"]]
 
 orders_by_cat = filtered.groupby("product_category")["orders"].sum().reset_index()
 donut_fig = go.Figure(
@@ -481,8 +440,9 @@ donut_fig.add_annotation(
     x=0.5,
     y=0.5,
     showarrow=False,
-    font=dict(size=18, color="#1f2937"),
+    font=dict(size=18, color="#e5e7eb"),
 )
+donut_fig.update_traces(textfont_color="#e5e7eb")
 donut_fig = style_figure(donut_fig)
 donut_fig.update_layout(height=300)
 
@@ -497,7 +457,7 @@ q_fig = px.bar(
     x="quarter",
     y="revenue",
     text_auto=".2s",
-    color_discrete_sequence=[palette["blue"]],
+    color_discrete_sequence=[palette["orange"]],
 )
 q_fig.update_traces(textposition="outside")
 q_fig = style_figure(q_fig)
@@ -587,7 +547,7 @@ combo_fig.add_trace(
         x=time_df["quarter"],
         y=time_df["orders"],
         name="Orders",
-        marker_color=palette["purple"],
+        marker_color=palette["blue"],
     )
 )
 combo_fig.add_trace(
@@ -651,22 +611,18 @@ orders_fig.update_layout(height=300)
 events_df = build_events_table(filtered)
 enriched = enrich_data(filtered, refresh_seed)
 
-def checkbox_group(label: str, options: list[str], key_prefix: str) -> list[str]:
-    selected = []
-    with st.sidebar.expander(label, expanded=False):
-        for option in options:
-            if st.checkbox(option, value=True, key=f"{key_prefix}_{option}"):
-                selected.append(option)
-    return selected
-
 st.sidebar.subheader("Opportunity filters")
 product_choices = sorted(enriched["product_category"].unique())
 city_choices = sorted(enriched["city"].unique())
 segment_choices = sorted(enriched["segment"].unique())
 
-selected_products = checkbox_group("Product", product_choices, "opp_prod") or product_choices
-selected_cities = checkbox_group("City", city_choices, "opp_city") or city_choices
-selected_segments = checkbox_group("Segment", segment_choices, "opp_seg") or segment_choices
+selected_products = st.sidebar.multiselect(
+    "Product", product_choices, default=product_choices
+)
+selected_cities = st.sidebar.multiselect("City", city_choices, default=city_choices)
+selected_segments = st.sidebar.multiselect(
+    "Segment", segment_choices, default=segment_choices
+)
 
 opportunity_df = enriched[
     enriched["product_category"].isin(selected_products)
@@ -688,7 +644,7 @@ treemap_fig = px.treemap(
 )
 treemap_fig.update_traces(
     texttemplate="%{label}<br>$%{value:,.0f}",
-    textfont=dict(color="#0f172a"),
+    textfont=dict(color="#e5e7eb"),
 )
 treemap_fig = style_figure(treemap_fig)
 treemap_fig.update_layout(height=400, coloraxis_showscale=False)
@@ -719,10 +675,10 @@ x_mid = scatter_df["growth_pct"].median() if not scatter_df.empty else 0
 y_mid = scatter_df["revenue"].median() if not scatter_df.empty else 0
 scatter_fig.add_shape(type="line", x0=x_mid, x1=x_mid, y0=0, y1=scatter_df["revenue"].max() if not scatter_df.empty else 1, line=dict(color="#cbd5f5", dash="dot"))
 scatter_fig.add_shape(type="line", x0=scatter_df["growth_pct"].min() if not scatter_df.empty else -0.1, x1=scatter_df["growth_pct"].max() if not scatter_df.empty else 0.1, y0=y_mid, y1=y_mid, line=dict(color="#cbd5f5", dash="dot"))
-scatter_fig.add_annotation(x=x_mid + 0.02, y=y_mid * 1.15, text="Invest", showarrow=False, font=dict(color="#0f172a"))
-scatter_fig.add_annotation(x=x_mid - 0.08, y=y_mid * 1.15, text="Protect", showarrow=False, font=dict(color="#0f172a"))
-scatter_fig.add_annotation(x=x_mid + 0.02, y=y_mid * 0.6, text="Monitor", showarrow=False, font=dict(color="#0f172a"))
-scatter_fig.add_annotation(x=x_mid - 0.08, y=y_mid * 0.6, text="Fix Later", showarrow=False, font=dict(color="#0f172a"))
+scatter_fig.add_annotation(x=x_mid + 0.02, y=y_mid * 1.15, text="Invest", showarrow=False, font=dict(color="#e5e7eb"))
+scatter_fig.add_annotation(x=x_mid - 0.08, y=y_mid * 1.15, text="Protect", showarrow=False, font=dict(color="#e5e7eb"))
+scatter_fig.add_annotation(x=x_mid + 0.02, y=y_mid * 0.6, text="Monitor", showarrow=False, font=dict(color="#e5e7eb"))
+scatter_fig.add_annotation(x=x_mid - 0.08, y=y_mid * 0.6, text="Fix Later", showarrow=False, font=dict(color="#e5e7eb"))
 scatter_fig = style_figure(scatter_fig)
 
 risk_drivers = [
@@ -927,8 +883,8 @@ with bottom_cols[2]:
     max_cell = max(q1_max, q2_max, 1)
 
     def color_cells(value: int) -> str:
-            intensity = 0.15 + (value / max_cell) * 0.55 if max_cell else 0.2
-            return f"background-color: rgba(16,185,129,{intensity:.2f});"
+        intensity = 0.15 + (value / max_cell) * 0.55 if max_cell else 0.2
+        return f"background-color: rgba(16,185,129,{intensity:.2f});"
 
     def bold_totals(row: pd.Series) -> list[str]:
         label = str(row["Account/Plan"])
@@ -1095,5 +1051,7 @@ styled_table = (
         }
     )
 )
-st.dataframe(styled_table, use_container_width=True, height=400, hide_index=True)
+priority_cols = st.columns(1, gap="large")
+with priority_cols[0]:
+    st.dataframe(styled_table, use_container_width=True, height=400, hide_index=True)
 
