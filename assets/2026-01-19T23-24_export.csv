@@ -1,0 +1,11 @@
+﻿Account/Plan,Event,Q1,Q2
+Basic,Button Clicked,669,704
+Basic,Page Viewed,2259,2376
+Totals for Basic,,2928,3080
+Business,Button Clicked,279,293
+Business,Page Viewed,941,990
+Totals for Business,,1220,1283
+Premium,Button Clicked,167,176
+Premium,Page Viewed,564,594
+Totals for Premium,,731,770
+Grand totals,,4879,5133
