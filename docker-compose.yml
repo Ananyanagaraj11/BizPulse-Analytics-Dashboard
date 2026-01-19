@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16
+    container_name: bizpulse-db
+    environment:
+      POSTGRES_USER: bizpulse
+      POSTGRES_PASSWORD: bizpulse
+      POSTGRES_DB: bizpulse
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: bizpulse-app
+    depends_on:
+      - db
+    ports:
+      - "8501:8501"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://bizpulse:bizpulse@db:5432/bizpulse
+      DB_TABLE: orders
+    volumes:
+      - .:/app
+
+volumes:
+  db_data:
